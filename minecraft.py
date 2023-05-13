@@ -7,30 +7,39 @@ files = os.listdir(path)
 
 for file in files:
 
-    if file != ".DS_Store":
+    base, ext = os.path.splitext(file)
 
-        img = cv2.imread(f'default-textures/{file}', cv2.IMREAD_UNCHANGED)
+    if file != ".DS_Store" and ext == ".png":
+
+        img = cv2.imread(f'default-textures/{file}', flags = cv2.IMREAD_UNCHANGED)
 
         h, w = img.shape[:2]
+        r_count = 0
+        g_count = 0
+        b_count = 0
+        count = 0
 
-        alpha_list = []
-        bgr_list = [0, 0, 0]
-
-        print(file)
         for i in range(h):
             for j in range(w):
                 b, g, r, a = img[i, j]
-                alpha_list.append(a)
-                bgr_list[0] += b
-                bgr_list[1] += g
-                bgr_list[2] += r
+                if a != 0:
+                    r_count += r
+                    g_count += g
+                    b_count += b
+                    count += 1
+        
+        r_average = 0
+        g_average = 0
+        b_average = 0
 
-        bgr_list[0] = int(bgr_list[0]/(h*w))
-        bgr_list[1] = int(bgr_list[1]/(h*w))
-        bgr_list[2] = int(bgr_list[2]/(h*w))
+        if count != 0:
+            r_average = int(r_count/count)
+            g_average = int(g_count/count)
+            b_average = int(b_count/count)
 
         for i in range(h):
             for j in range(w):
-                img[i, j] = bgr_list[0], bgr_list[1], bgr_list[2], alpha_list[i*j+j]
+                b, g, r, a = img[i, j]
+                img[i, j] = b_average, g_average, r_average, a
 
         cv2.imwrite(f'blocks/{file}',img)
