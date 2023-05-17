@@ -9,7 +9,7 @@ for file in files:
 
     base, ext = os.path.splitext(file)
 
-    if file != ".DS_Store" and ext == ".png":
+    if ext == ".png":
 
         img = cv2.imread(f'default-textures/{file}', flags = cv2.IMREAD_UNCHANGED)
 
